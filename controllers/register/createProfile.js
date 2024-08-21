@@ -1,5 +1,4 @@
 // controllers/createProfile.js
-const jwt = require('jsonwebtoken');
 const User = require('../../models/User');
 const Profile = require('../../models/Profile');
 
@@ -32,12 +31,8 @@ exports.createProfile = async (req, res) => {
 
     await profile.save();
 
-    // Generate JWT token for the user
-    const token = jwt.sign({ id: user._id, mobile: user.mobile }, process.env.JWT_SECRET, { expiresIn: '3h' });
-
     res.status(200).json({
         message: 'Profile created successfully',
-        token,
         user: {
             id: user._id,
             mobile: user.mobile,
