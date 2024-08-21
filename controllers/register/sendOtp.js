@@ -38,7 +38,7 @@ exports.sendOtp = async (req, res) => {
 
         try {
             await sendEmail(email, 'Your RideBuddy OTP', `Your OTP for RideBuddy is ${emailOtp}. Please do not share it with anyone.`);
-            console.log(`OTP sent to email ${email}`);
+            console.log(`OTP ${emailOtp} sent to email ${email}`);
         } catch (error) {
             console.error('Error sending email OTP:', error);
             return res.status(500).json({ message: 'Failed to send OTP to email' });
