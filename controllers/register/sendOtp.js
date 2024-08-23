@@ -14,18 +14,17 @@ exports.sendOtp = async (req, res) => {
         return res.status(400).json({ message: 'Mobile number is required' });
     }
 
+    let user = await User.findOne({ mobile });
+
+    if (user) {
+        return res.status(400).json({ message: 'You already have an account. Please login.' });
+    }
+
     const otp = generateOTP();
     const otpExpiry = Date.now() + 5 * 60 * 1000;
     const hashedOtp = await bcrypt.hash(otp, OTP_HASH_SALT_ROUNDS);
 
-    let user = await User.findOne({ mobile });
-
-    if (user) {
-        user.otp = hashedOtp;
-        user.otpExpiry = otpExpiry;
-    } else {
-        user = new User({ mobile, otp: hashedOtp, otpExpiry });
-    }
+    user = new User({ mobile, otp: hashedOtp, otpExpiry });
 
     if (email) {
         const emailOtp = generateOTP();
