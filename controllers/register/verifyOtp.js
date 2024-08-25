@@ -18,7 +18,7 @@ exports.verifyOtp = async (req, res) => {
             return res.status(400).json({ message: 'Invalid or expired OTP' });
         }
 
-        const otpMatch = await bcrypt.compare(otp, user.otp);
+        const otpMatch = bcrypt.compare(otp, user.otp);
 
         if (!otpMatch) {
             return res.status(400).json({ message: 'Invalid OTP' });

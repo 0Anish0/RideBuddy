@@ -15,6 +15,13 @@ exports.sendOtp = async (req, res) => {
         return res.status(400).json({ message: 'Mobile number is required' });
     }
 
+    const existingOtp = await NewUser.findOne({ mobile });
+
+    if (existingOtp) {
+        await NewUser.deleteOne({ mobile });
+        console.log(`Old OTP data for mobile number ${mobile} deleted.`);
+    }
+
     if (email && !/\S+@\S+\.\S+/.test(email)) {
         return res.status(400).json({ message: 'Invalid email format' });
     }
