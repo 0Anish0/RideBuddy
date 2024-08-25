@@ -1,7 +1,7 @@
+const bcrypt = require('bcrypt');
 const User = require('../../models/User');
 const jwt = require('jsonwebtoken');
 
-// Controller for verifying OTP
 exports.verifyOtp = async (req, res) => {
     const { mobile, otp } = req.body;
     if (!mobile || !otp) {
@@ -12,8 +12,11 @@ exports.verifyOtp = async (req, res) => {
         if (!user) {
             return res.status(400).json({ message: 'User not found' });
         }
-        if (user.otp === otp && user.otpExpiry > Date.now()) {
-            user.isMobileVerified = true;
+        const otpMatch = bcrypt.compare(otp, user.otp);
+        if (!otpMatch) {
+            return res.status(400).json({ message: 'Invalid OTP' });
+        }
+        else if (otpMatch && user.otpExpiry > Date.now()) {
             user.otp = undefined;
             user.otpExpiry = undefined;
             await user.save();
