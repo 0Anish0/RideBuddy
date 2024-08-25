@@ -6,6 +6,12 @@ const UserSchema = new mongoose.Schema({
         unique: true,
         required: true
     },
+    otp: {
+        type: String
+    },
+    otpExpiry: {
+        type: Date
+    },
     email: {
         type: String,
         unique: true,

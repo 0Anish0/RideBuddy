@@ -4,7 +4,7 @@ const User = require('../../models/User');
 const generateOTP = require('../../utils/generateOTP');
 const sendOtp = require('../../utils/sendOtp');
 
-const OTP_HASH_SALT_ROUNDS = 10; // Salt rounds for bcrypt
+const OTP_HASH_SALT_ROUNDS = 10;
 
 exports.login = async (req, res) => {
     const { mobile } = req.body;
