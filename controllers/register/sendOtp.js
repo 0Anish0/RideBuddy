@@ -36,7 +36,11 @@ exports.sendOtp = async (req, res) => {
         const otpExpiry = Date.now() + 5 * 60 * 1000;
         const hashedOtp = await bcrypt.hash(otp, OTP_HASH_SALT_ROUNDS);
 
-        user = new User({ mobile, otp: hashedOtp, otpExpiry });
+        user = new User({
+            mobile,
+            otp: hashedOtp,
+            otpExpiry
+        });
 
         if (email) {
             const emailOtp = generateOTP();
@@ -58,9 +62,12 @@ exports.sendOtp = async (req, res) => {
 
         await user.save();
 
+        const maskedMobile = mobile.slice(-4).padStart(mobile.length, '*');
+        const maskedEmail = `${email.charAt(0)}${'*'.repeat(email.length - 12)}${email.slice(-11)}`;
+
         try {
             await sendOtp({ mobile, otp });
-            res.status(200).json({ message: 'OTP sent to mobile number and email (if provided)' });
+            res.status(200).json({ message: `OTP sent to ${maskedMobile}${email ? ` and ${maskedEmail}` : ''}` });
         } catch (error) {
             console.error('Error sending OTP via SMS:', error);
             res.status(500).json({ message: 'Error sending OTP via SMS', error: error.message || error });
