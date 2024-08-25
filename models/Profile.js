@@ -43,6 +43,12 @@ const ProfileSchema = new mongoose.Schema({
     prompts: {
         type: [String]
     },
+    status: {
+        type: String,
+        required: true,
+        enum: ['active', 'blocked'],
+        default: 'active'
+    }
 });
 
 module.exports = mongoose.model('Profile', ProfileSchema);

@@ -25,31 +25,28 @@ exports.sendOtp = async (req, res) => {
             return res.status(400).json({ message: 'You already have an account. Please login.' });
         }
 
+        const otp = generateOTP();
+        const otpExpiry = Date.now() + 5 * 60 * 1000;
+        const hashedOtp = await bcrypt.hash(otp, OTP_HASH_SALT_ROUNDS);
+
+        let userData = {
+            mobile,
+            otp: hashedOtp,
+            otpExpiry
+        };
+
         if (email) {
             user = await User.findOne({ email });
             if (user) {
                 return res.status(400).json({ message: 'Email is already in use. Please login.' });
             }
-        }
-
-        const otp = generateOTP();
-        const otpExpiry = Date.now() + 5 * 60 * 1000;
-        const hashedOtp = await bcrypt.hash(otp, OTP_HASH_SALT_ROUNDS);
-
-        user = new User({
-            mobile,
-            otp: hashedOtp,
-            otpExpiry
-        });
-
-        if (email) {
             const emailOtp = generateOTP();
             const emailOtpExpiry = Date.now() + 5 * 60 * 1000;
             const hashedEmailOtp = await bcrypt.hash(emailOtp, OTP_HASH_SALT_ROUNDS);
 
-            user.email = email;
-            user.emailOtp = hashedEmailOtp;
-            user.emailOtpExpiry = emailOtpExpiry;
+            userData.email = email;
+            userData.emailOtp = hashedEmailOtp;
+            userData.emailOtpExpiry = emailOtpExpiry;
 
             try {
                 await sendEmail(email, 'Your RideBuddy OTP', `Your OTP for RideBuddy is ${emailOtp}. Please do not share it with anyone.`);
@@ -60,10 +57,12 @@ exports.sendOtp = async (req, res) => {
             }
         }
 
-        await user.save();
+        user = new User(userData);
+
+        await user.save({ validateBeforeSave: false }); // Disable validation for email field
 
         const maskedMobile = mobile.slice(-4).padStart(mobile.length, '*');
-        const maskedEmail = `${email.charAt(0)}${'*'.repeat(email.length - 12)}${email.slice(-11)}`;
+        const maskedEmail = email ? `${email.charAt(0)}${'*'.repeat(email.length - 11)}${email.slice(-11)}` : ''; // Mask email if provided
 
         try {
             await sendOtp({ mobile, otp });

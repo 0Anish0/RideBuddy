@@ -10,6 +10,7 @@ const UserSchema = new mongoose.Schema({
         type: String,
         unique: true,
         sparse: true,
+        required: false,
     },
     otp: {
         type: String
