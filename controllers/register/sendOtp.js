@@ -1,6 +1,7 @@
 require('dotenv').config();
 const bcrypt = require('bcrypt');
 const User = require('../../models/User');
+const NewUser = require('../../models/NewUser');
 const generateOTP = require('../../utils/generateOTP');
 const sendOtp = require('../../utils/sendOtp');
 const sendEmail = require('../../config/nodemailer');
@@ -21,7 +22,7 @@ exports.sendOtp = async (req, res) => {
     try {
         let user = await User.findOne({ mobile });
 
-        if (user) {
+        if (user && user.isMobileVerified === true) {
             return res.status(400).json({ message: 'You already have an account. Please login.' });
         }
 
@@ -57,12 +58,12 @@ exports.sendOtp = async (req, res) => {
             }
         }
 
-        user = new User(userData);
+        user = new NewUser(userData);
 
-        await user.save({ validateBeforeSave: false }); // Disable validation for email field
+        await user.save({ validateBeforeSave: false });
 
         const maskedMobile = mobile.slice(-4).padStart(mobile.length, '*');
-        const maskedEmail = email ? `${email.charAt(0)}${'*'.repeat(email.length - 11)}${email.slice(-11)}` : ''; // Mask email if provided
+        const maskedEmail = email ? `${email.charAt(0)}${'*'.repeat(email.length - 11)}${email.slice(-11)}` : '';
 
         try {
             await sendOtp({ mobile, otp });

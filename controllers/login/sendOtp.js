@@ -24,7 +24,6 @@ exports.login = async (req, res) => {
             user.otpExpiry = otpExpiry;
             await user.save();
 
-            // Send OTP via Textify Digitals API
             try {
                 await sendOtp({ mobile, otp });
                 res.status(200).json({ message: 'OTP sent successfully' });

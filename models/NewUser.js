@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const UserSchema = new mongoose.Schema({
+const NewUserSchema = new mongoose.Schema({
     mobile: {
         type: String,
         unique: true,
@@ -12,6 +12,18 @@ const UserSchema = new mongoose.Schema({
         sparse: true,
         required: false,
     },
+    otp: {
+        type: String
+    },
+    otpExpiry: {
+        type: Date
+    },
+    emailOtp: {
+        type: String
+    },
+    emailOtpExpiry: {
+        type: Date
+    },
     isMobileVerified: {
         type: Boolean,
         default: false
@@ -21,5 +33,4 @@ const UserSchema = new mongoose.Schema({
         default: false
     }
 });
-
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model('NewUser', NewUserSchema);
