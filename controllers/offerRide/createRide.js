@@ -1,17 +1,17 @@
 const Vehicle = require('../../models/Vehicle');
 const Ride = require('../../models/RideOffer');
+const Profile = require('../../models/Profile');
 
 exports.createRide = async (req, res) => {
     try {
-        const driver = req.user.id;
+        const driver = Profile.findOne(req.user.id);
         const { sourceName, sourcePoint, addStopName, addStopPoints, destinationName, destinationPoint, routes, tripDistance, tripDuration, pickupTime, pickupDate, noOfSeat, pricePerSeat } = req.body;
 
-        // all fields are required without addStop
         if (!sourceName || !sourcePoint || !destinationName || !destinationPoint || !routes || !tripDistance || !tripDuration || !pickupTime || !pickupDate || !noOfSeat || !pricePerSeat) {
             return res.status(400).json({ message: "Please fill all the required fields" });
         }
 
-        const vehicles = await Vehicle.find({ driver });
+        const vehicles = await Vehicle.find(driver.id);
         if (vehicles.length === 0) {
             return res.status(400).json({ message: 'No vehicle found for the user' });
         }
@@ -19,15 +19,14 @@ exports.createRide = async (req, res) => {
         const vehical = vehicle.id;
 
         const newRide = new Ride({
-            driver,
             sourceName,
             sourcePoint,
             addStopName,
             addStopPoints,
             destinationName,
             destinationPoint,
-            vehical,
             routes,
+            vehical,
             tripDistance,
             tripDuration,
             pickupTime,
