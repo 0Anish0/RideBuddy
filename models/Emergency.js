@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const emergencyContactSchema = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'Profile',
         required: true
     },
     contacts: [{

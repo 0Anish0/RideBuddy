@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const VehicleSchema = new Schema({
     ownerId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'Profile',
         required: true
     },
     vehicleName: {

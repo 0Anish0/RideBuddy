@@ -1,20 +1,52 @@
 const mongoose = require('mongoose');
 
 const RideSchema = new mongoose.Schema({
-    source: {
+    driver: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Profile',
+    },
+    sourceName: {
         type: String,
         required: true
     },
-    addStop: {
+    sourcePoint: {
+        latitude: {
+            type: String,
+            required: true,
+        },
+        longitude: {
+            type: String,
+            required: true
+        }
+    },
+    addStopName: {
         type: String
     },
-    destination: {
+    addStopPoints: {
+        latitude: {
+            type: String
+        },
+        longitude: {
+            type: String
+        }
+    },
+    destinationName: {
         type: String,
         required: true
+    },
+    destinationPoint: {
+        latitude: {
+            type: String,
+            required: true,
+        },
+        longitude: {
+            type: String,
+            required: true
+        }
     },
     vehical: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Profile',
+        ref: 'Vehicle',
         required: true
     },
     routes: {
@@ -52,6 +84,6 @@ const RideSchema = new mongoose.Schema({
     }
 });
 
-const Ride = mongoose.model('Ride', RideSchema);
+const Ride = mongoose.model('OfferRide', RideSchema);
 
 module.exports = Ride;

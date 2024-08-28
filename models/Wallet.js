@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const WalletSchema = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'Profile',
         required: true
     },
     balance: {
@@ -24,7 +24,7 @@ const WalletSchema = new Schema({
     },
     totalRideOffers: [{
         type: Schema.Types.ObjectId,
-        ref: 'RideOffer'
+        ref: 'OfferRide'
     }],
     totalRidesBooked: [{
         type: Schema.Types.ObjectId,

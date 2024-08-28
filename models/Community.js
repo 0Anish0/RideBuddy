@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const feedbackPostSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'Profile',
         required: true
     },
     content: {
@@ -15,7 +15,7 @@ const feedbackPostSchema = new mongoose.Schema({
     likes: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
+            ref: 'Profile'
         }
     ],
     createdAt: {

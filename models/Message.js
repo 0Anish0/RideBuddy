@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 const messageSchema = new mongoose.Schema({
     senderId: {
         type: mongoose.Types.ObjectId,
-        ref: 'User'
+        ref: 'Profile'
     },
     receiverId: {
         type: mongoose.Types.ObjectId,
-        ref: 'User'
+        ref: 'Profile'
     },
     message: {
         type: String

@@ -16,12 +16,11 @@ exports.verifyOtp = async (req, res) => {
             return res.status(400).json({ message: 'User not found' });
         }
 
-        const otpMatch = await bcrypt.compare(otp, user.otp); // Await the bcrypt.compare
+        const otpMatch = await bcrypt.compare(otp, user.otp);
 
         if (!otpMatch) {
             return res.status(400).json({ message: 'Invalid OTP' });
         } else if (user.otpExpiry > Date.now()) {
-            // OTP is valid and not expired
             user.otp = undefined;
             user.otpExpiry = undefined;
             await user.save();
