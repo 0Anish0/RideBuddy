@@ -10,4 +10,4 @@ const { getMessageById } = require('../controllers/message/getmessage');
 router.post('/messages', authenticateToken, sendMessage); // Route to POST messages
 router.get('/getmessages/:id', authenticateToken, getMessageById); // Route to GET messages
 
-module.exports = router; 
+module.exports = router;
