@@ -103,9 +103,12 @@ const RideSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
-    noOfSeat: {
+    seatsOffered: {
         type: Number,
         required: true
+    },
+    noOfSeat: {
+        type: Number,
     },
     pricePerSeat: {
         type: Number,
