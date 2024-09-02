@@ -42,7 +42,7 @@ exports.createRide = async (req, res) => {
         } = req.body;
 
         // Ensure all required fields are filled out
-        if (!sourceName || !sourcePoint || !destinationName || !destinationPoint || !routes || !tripDistance || !tripDuration || !pickupTime || !pickupDate || !seatsOffered || !pricePerSeat || !vehicle) {
+        if (!sourceName || !sourcePoint || !destinationName || !destinationPoint || !routes || !tripDistance || !tripDuration || !time || !date || !seatsOffered || !pricePerSeat || !vehicle) {
             return res.status(400).json({ success: false, message: "Please fill all the required fields" });
         }
 
@@ -59,8 +59,8 @@ exports.createRide = async (req, res) => {
             vehicle,  // Storing the entire vehicle object
             tripDistance,
             tripDuration,
-            pickupTime,
-            pickupDate,
+            time,
+            date,
             seatsOffered,
             pricePerSeat,
             status: status || 'pending',
