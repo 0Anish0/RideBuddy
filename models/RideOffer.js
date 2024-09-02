@@ -103,7 +103,7 @@ const RideSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
-    seatsOffered: {
+    noOfSeat: {
         type: Number,
         required: true
     },
