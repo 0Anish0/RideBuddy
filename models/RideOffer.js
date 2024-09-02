@@ -124,7 +124,7 @@ const RideSchema = new mongoose.Schema({
         type: [String],
     },
     preferences: {
-        type: [String],
+        type: [[String]],
         default: []
     }
 });
