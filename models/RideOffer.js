@@ -95,11 +95,11 @@ const RideSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    pickupTime: {
+    time: {
         type: String,
         required: true
     },
-    pickupDate: {
+    date: {
         type: Date,
         required: true
     },
