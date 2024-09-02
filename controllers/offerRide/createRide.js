@@ -39,7 +39,8 @@ exports.createRide = async (req, res) => {
             status, 
             vehicle, 
             recurringRide, 
-            selectedDays 
+            selectedDays ,
+            gender,
         } = req.body;
 
         // Ensure all required fields are filled out
@@ -67,7 +68,8 @@ exports.createRide = async (req, res) => {
             pricePerSeat,
             status: status || 'pending',
             recurringRide,
-            selectedDays
+            selectedDays,
+            gender
         });
 
         // Save the new ride to the database
