@@ -129,6 +129,10 @@ const RideSchema = new mongoose.Schema({
     preferences: {
         type: [[String]],
         default: []
+    },
+    gender:{
+        type: Boolean,
+        required: true,
     }
 });
 
