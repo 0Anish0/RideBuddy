@@ -123,6 +123,10 @@ const RideSchema = new mongoose.Schema({
     selectedDays: {
         type: [String],
     }
+    preferences: {
+        type: [String],
+        default: []
+    }
 });
 
 const Ride = mongoose.model('RideOffer', RideSchema);
