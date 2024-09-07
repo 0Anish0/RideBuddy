@@ -1,7 +1,7 @@
 const express = require('express');
 
 // Import individual controllers
-const sendMessage = require('../controllers/message/sendMessage'); //corrected
+const sendMessage = require('../controllers/message/sendmessage');
 const getMessagesBetweenProfiles = require('../controllers/message/getMessageBetweenUsers');
 const markMessageAsRead = require('../controllers/message/markMessageAsRead');
 
