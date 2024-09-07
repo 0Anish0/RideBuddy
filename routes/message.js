@@ -1,13 +1,15 @@
 const express = require('express');
-const router = express.Router();
-const authenticateToken = require('../middleware/authenticateToken');
 
 // Import individual controllers
-const { sendMessage } = require('../controllers/message/sendmessage')
-const { getMessageById } = require('../controllers/message/getmessage');
+const sendMessage = require('../controllers/message/sendMessage');
+const getMessagesBetweenProfiles = require('../controllers/message/getMessageBetweenUsers');
+const markMessageAsRead = require('../controllers/message/markMessageAsRead');
+
+const router = express.Router();
 
 // Define routes for message functionality
-router.post('/messages', authenticateToken, sendMessage); // Route to POST messages
-router.get('/getmessages/:id', authenticateToken, getMessageById); // Route to GET messages
+router.get('/messages/:senderId/:receiverId', getMessagesBetweenProfiles);  // Get messages between two profiles
+router.post('/messages', sendMessage);  // Send a message
+router.patch('/read/:messageId', markMessageAsRead);  // Mark a message as read
 
 module.exports = router;
