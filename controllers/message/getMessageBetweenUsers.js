@@ -11,8 +11,22 @@ const getMessagesBetweenProfiles = async (req, res) => {
             ]
         })
         .sort('timestamp')
-        .populate('sender', 'name profilePicture')
-        .populate('receiver', 'name profilePicture');
+        .populate({
+            path: 'sender',
+            select: 'name profilePicture',
+            populate: {
+                path: 'userId',
+                select: 'mobile'
+            }
+        })
+        .populate({
+            path: 'receiver',
+            select: 'name profilePicture',
+            populate: {
+                path: 'userId',
+                select: 'mobile'
+            }
+        });
 
         res.json(messages);
     } catch (err) {
