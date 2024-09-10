@@ -14,7 +14,7 @@ const { getProfile } = require('../controllers/register/getProfile.js');
 router.post('/send-otp', sendOtp); // Route to send OTP
 router.post('/verify-otp', verifyOtp); // Route to verify OTP
 router.post('/create-profile', authenticateToken, createProfile); // Route to create profile
-router.post('/get-profile', authenticateToken, getProfile); // Route to get profile
+router.get('/get-profile/:userId', getProfile); // Route to get profile
 router.post('/update/:userId', authenticateToken, upload.fields([
     { name: 'profilePicture', maxCount: 1 },
     { name: 'images', maxCount: 5 }
