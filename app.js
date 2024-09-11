@@ -12,6 +12,8 @@ const Vehical = require('./routes/vehicle');
 const Emergency = require('./routes/emergencyContacts');
 const Verification = require('./routes/verification');
 const Message = require('./routes/message');
+const Prompt = require('./routes/prompt');
+const Intrest = require('./routes/intrest');
 
 const app = express();
 app.use(express.json());
@@ -32,6 +34,8 @@ app.use('/api', Vehical);
 app.use('/api', Emergency);
 app.use('/api', Verification);
 app.use('/api', Message);
+// app.use('/api', Intrest);
+app.use('/api', Prompt);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

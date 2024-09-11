@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
-function wordLimit(val) {
-    return val.split(' ').filter(word => word.length > 0).length <= 120;
+function charLimit(val) {
+    return val.length <= 60;
 }
 
 function arrayLimit(val) {
@@ -31,7 +31,7 @@ const ProfileSchema = new mongoose.Schema({
     },
     bio: {
         type: String,
-        validate: [wordLimit, '{PATH} exceeds the 120-word limit']
+        validate: [charLimit, '{PATH} exceeds the 60-character limit']
     },
     interests: {
         type: [String]
