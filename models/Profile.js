@@ -36,6 +36,9 @@ const ProfileSchema = new mongoose.Schema({
     interests: {
         type: [String]
     },
+    location: {
+        type: String
+    },
     images: {
         type: [String],
         validate: [arrayLimit, '{PATH} exceeds the limit of 5']

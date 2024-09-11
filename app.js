@@ -34,7 +34,7 @@ app.use('/api', Vehical);
 app.use('/api', Emergency);
 app.use('/api', Verification);
 app.use('/api', Message);
-// app.use('/api', Intrest);
+app.use('/api', Intrest);
 app.use('/api', Prompt);
 
 const PORT = process.env.PORT || 5000;
