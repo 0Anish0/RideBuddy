@@ -2,7 +2,6 @@ const Interest = require('../models/Interest');
 
 const getAllInterests = async (req, res) => {
     try {
-        console.log('hello');
         const interests = await Interest.find();
         res.status(200).json(interests);
     } catch (error) {

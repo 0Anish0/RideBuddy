@@ -25,6 +25,8 @@ connectDB();
 app.use(cors());
 
 // Routes
+app.use('/api', Intrest);
+app.use('/api', Prompt);
 app.use('/api', Register);
 app.use('/api', Login);
 app.use('/api', OfferRide);
@@ -34,8 +36,7 @@ app.use('/api', Vehical);
 app.use('/api', Emergency);
 app.use('/api', Verification);
 app.use('/api', Message);
-app.use('/api', Intrest);
-app.use('/api', Prompt);
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
