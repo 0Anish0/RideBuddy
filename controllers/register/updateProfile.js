@@ -19,6 +19,10 @@ const updateProfile = async (req, res) => {
             profile.interests = interests;
         }
 
+        if (bio) {
+            profile.bio = bio;
+        }
+
         if (images) {
             if (profile.images.length + images.length > 5) {
                 return res.status(400).json({ message: 'Cannot upload more than 5 images' });
