@@ -15,14 +15,6 @@ const updateProfile = async (req, res) => {
             profile.profilePicture = profilePicture;
         }
 
-        if (bio) {
-            const isBioValid = wordLimit(bio);
-            if (!isBioValid) {
-                return res.status(400).json({ message: 'Bio exceeds the 60-word limit' });
-            }
-            profile.bio = bio;
-        }
-
         if (interests) {
             profile.interests = interests;
         }
