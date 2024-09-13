@@ -15,7 +15,7 @@ router.post('/send-otp', sendOtp); // Route to send OTP
 router.post('/verify-otp', verifyOtp); // Route to verify OTP
 router.post('/create-profile', authenticateToken, createProfile); // Route to create profile
 router.get('/get-profile/:userId', getProfile); // Route to get profile
-router.post('/update/:userId', authenticateToken, upload.fields([
+router.patch('/update/:userId', upload.fields([
     { name: 'profilePicture', maxCount: 1 },
     { name: 'images', maxCount: 5 }
 ]), updateProfile); // Route to update profile
