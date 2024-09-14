@@ -1,13 +1,30 @@
 const BookRide = require('../../models/BookRide');
+const Ride = require('../../models/RideOffer');
+const Profile = require('../../models/Profile');
 
-exports.getBookingById = async (req, res) => {
+const getBookedRideById = async (req, res) => {
     try {
-        const booking = await BookRide.findById(req.params.id).populate('ride user');
-        if (!booking) {
-            return res.status(404).json({ success: false, message: 'Ride booking not found' });
+        const bookedRide = await BookRide.findById(req.params.id)
+            .populate({
+                path: 'ride',
+                model: Ride,
+            })
+            .populate({
+                path: 'user',
+                model: Profile,
+            })
+            .exec();
+
+        if (!bookedRide) {
+            return res.status(404).json({ message: 'Booked ride not found' });
         }
-        res.status(200).json({ success: true, booking });
+
+        res.status(200).json(bookedRide);
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to fetch ride booking', error: error.message });
+        res.status(500).json({ message: error.message });
     }
+};
+
+module.exports = {
+    getBookedRideById,
 };

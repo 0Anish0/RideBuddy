@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const bookRideSchema = new mongoose.Schema({
     ride: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'OfferRide',
+        ref: 'Ride',
         required: true
     },
     user: {
@@ -27,7 +27,7 @@ const bookRideSchema = new mongoose.Schema({
     },
     bookingStatus: {
         type: String,
-        enum: ['confirmed', 'cancelled', 'completed'],
+        enum: ['confirmed', 'cancelled', 'completed','pending'],
         default: 'confirmed'
     },
     bookingDate: {
@@ -49,13 +49,33 @@ const bookRideSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
-    pickupLocation: {
+    pickupName: {
         type: String,
         required: true
     },
-    dropoffLocation: {
+    pickupPoint: {
+        latitude: {
+            type: String,
+            required: true,
+        },
+        longitude: {
+            type: String,
+            required: true
+        }
+    },
+    dropoffName: {
         type: String,
         required: true
+    },
+    dropoffPoint: {
+        latitude: {
+            type: String,
+            required: true,
+        },
+        longitude: {
+            type: String,
+            required: true
+        }
     }
 });
 

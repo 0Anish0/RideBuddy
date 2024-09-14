@@ -25,11 +25,12 @@ connectDB();
 app.use(cors());
 
 // Routes
+app.use('/api', OfferRide);
 app.use('/api', Intrest);
 app.use('/api', Prompt);
 app.use('/api', Register);
 app.use('/api', Login);
-app.use('/api', OfferRide);
+
 app.use('/api', BookRide);
 app.use('/api', Wallet);
 app.use('/api', Vehical);
