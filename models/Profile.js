@@ -8,6 +8,21 @@ function arrayLimit(val) {
     return val.length <= 5;
 }
 
+const ImageSchema = new mongoose.Schema({
+    fileName: {
+        type: String,
+        required: true
+    },
+    filePath: {
+        type: String,
+        required: true
+    },
+    url: {
+        type: String,
+        required: true
+    }
+});
+
 const ProfileSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -15,7 +30,7 @@ const ProfileSchema = new mongoose.Schema({
         required: true
     },
     profilePicture: {
-        type: String
+        type: ImageSchema
     },
     name: {
         type: String,
@@ -40,7 +55,7 @@ const ProfileSchema = new mongoose.Schema({
         type: String
     },
     images: {
-        type: [String],
+        type: [ImageSchema],
         validate: [arrayLimit, '{PATH} exceeds the limit of 5']
     },
     prompts: {
