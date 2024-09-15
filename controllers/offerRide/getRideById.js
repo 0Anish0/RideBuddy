@@ -18,6 +18,7 @@ const getOfferedRideById = async (req, res) => {
                 message: 'User not found'
             });
         }
+        
         const bookedRides = await BookRide.find({ user: userId })
             .populate('ride')
             .populate('user', 'name');
