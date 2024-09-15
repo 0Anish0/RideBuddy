@@ -27,7 +27,7 @@ const bookRideSchema = new mongoose.Schema({
     },
     bookingStatus: {
         type: String,
-        enum: ['confirmed', 'cancelled', 'completed','pending'],
+        enum: ['confirmed', 'cancelled', 'completed', 'pending'],
         default: 'confirmed'
     },
     bookingDate: {
@@ -77,6 +77,24 @@ const bookRideSchema = new mongoose.Schema({
             required: true
         }
     }
+
+
+});
+
+bookRideSchema.virtual('rideStatus').get(function () {
+    const now = new Date();
+    const pickupTime = new Date(this.pickupTime);
+    let status = '';
+
+    if (pickupTime < now) {
+        status = 'Recent';
+    } else if (pickupTime.toDateString() === now.toDateString()) {
+        status = now < pickupTime ? 'Upcoming Ride' : 'Current Ride';
+    } else {
+        status = 'Upcoming Ride';
+    }
+
+    return status;
 });
 
 const BookRide = mongoose.model('BookRide', bookRideSchema);
