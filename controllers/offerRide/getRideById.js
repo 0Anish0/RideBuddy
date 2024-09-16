@@ -11,6 +11,7 @@ const getOfferedRideById = async (req, res) => {
                 message: 'User ID is required'
             });
         }
+
         const userProfile = await Profile.findById(userId);
         if (!userProfile) {
             return res.status(404).json({
@@ -18,12 +19,19 @@ const getOfferedRideById = async (req, res) => {
                 message: 'User not found'
             });
         }
-        
-        const bookedRides = await RequestBooking.find({ user: userId })
-            .populate('ride')
-            .populate('user', 'name');
+
+        // Fetch booked rides (where user is a passenger)
+        const bookedRides = await RequestBooking.find({ userProfile: userId })
+            .populate({
+                path: 'ride',  // Assuming 'ride' is a reference to RideOffer
+                populate: { path: 'driver', select: 'name' }
+            })
+            .populate('userProfile', 'name');  // Assuming 'userProfile' is referencing the Profile schema
+
+        // Fetch offered rides (where user is the driver)
         const offeredRides = await RideOffer.find({ driver: userId })
-            .populate('driver', 'name');
+            .populate('driver', 'name');  // Assuming 'driver' references the Profile schema
+
         return res.status(200).json({
             success: true,
             message: 'Rides fetched successfully',

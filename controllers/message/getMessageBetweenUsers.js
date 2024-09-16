@@ -38,7 +38,16 @@ const getMessagesBetweenProfiles = async (req, res) => {
 const getChatProfiles = async (req, res) => {
     try {
         const { profileId } = req.params;  // Assume profileId is passed as a parameter
-        
+
+        // Fetch the profile details of the current user
+        const currentUser = await Profile.findById(profileId).select('name profilePicture');
+        if (!currentUser) {
+            return res.status(404).json({
+                success: false,
+                message: 'User profile not found'
+            });
+        }
+
         // Find all messages where the given profileId is either the sender or receiver
         const messages = await Message.find({
             $or: [
@@ -48,6 +57,22 @@ const getChatProfiles = async (req, res) => {
         })
         .populate('sender', 'name profilePicture')   // Populating sender's name and profilePicture
         .populate('receiver', 'name profilePicture'); // Populating receiver's name and profilePicture
+
+        // If no messages are found, return default profile with welcome message
+        if (messages.length === 0) {
+            return res.status(200).json({
+                success: true,
+                chatProfiles: [
+                    {
+                        _id: currentUser._id,
+                        name: currentUser.name,
+                        profilePicture: currentUser.profilePicture,
+                        welcomeMessage: `Welcome, ${currentUser.name}! Start a new conversation.`
+                    }
+                ],
+                message: 'No chat messages found, displaying user profile'
+            });
+        }
 
         // Extract unique chat profiles (both senders and receivers)
         let chatProfiles = new Map();  // Use Map to store profiles with additional details
