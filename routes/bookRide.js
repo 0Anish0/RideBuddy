@@ -15,7 +15,7 @@ router.post('/book-ride', createBooking); // Create a new ride booking
 router.post('/getAllRides', getAllRides);
 router.get('/booking/:id', getBookedRideById);  // Specific ride booking by ID
 router.put('/booking/:id', updateBooking);  // Update a ride booking by ID
-router.put('/rides/request/:bookingId/cancel', cancelRequestBooking);
-router.post('/rides/confirmed/:confirmedRideId/cancel', cancelConfirmedRide);
+router.patch('/rides/request/:bookingId/cancel', cancelRequestBooking);
+router.patch('/rides/confirmed/:confirmedRideId/cancel', cancelConfirmedRide);
 
 module.exports = router;
