@@ -7,7 +7,7 @@ const RequestBooking = require('../../models/RequestBooking');
 // Cancelling a Confirmed Ride
 exports.cancelConfirmedRide = async (req, res) => {
     const { confirmedRideId } = req.params;
-    const { userId } = req.user; // Assuming authentication middleware adds user to req
+    const { userId } = "66cfe8f83202b86bd8256af2"; // Assuming authentication middleware adds user to req
 
     try {
         // Find the confirmed ride

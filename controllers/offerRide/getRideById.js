@@ -1,4 +1,4 @@
-const BookRide = require('../../models/BookRide');
+const RequestBooking = require('../../models/RequestBooking');
 const RideOffer = require('../../models/RideOffer');
 const Profile = require('../../models/Profile');
 
@@ -19,7 +19,7 @@ const getOfferedRideById = async (req, res) => {
             });
         }
         
-        const bookedRides = await BookRide.find({ user: userId })
+        const bookedRides = await RequestBooking.find({ user: userId })
             .populate('ride')
             .populate('user', 'name');
         const offeredRides = await RideOffer.find({ driver: userId })
