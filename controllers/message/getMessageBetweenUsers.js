@@ -4,7 +4,8 @@ const getMessagesBetweenProfiles = async (req, res) => {
     try {
         const { senderId, receiverId } = req.params;
 
-        const messages = await Message.find({
+        // Check if any messages already exist between sender and receiver
+        let messages = await Message.find({
             $or: [
                 { sender: senderId, receiver: receiverId },
                 { sender: receiverId, receiver: senderId }
@@ -27,6 +28,29 @@ const getMessagesBetweenProfiles = async (req, res) => {
                 select: 'mobile'
             }
         });
+
+        // If no messages exist, create a welcome message
+        if (messages.length === 0) {
+            // Get sender and receiver profiles
+            const senderProfile = await Profile.findById(senderId);
+            const receiverProfile = await Profile.findById(receiverId);
+
+            if (!senderProfile || !receiverProfile) {
+                return res.status(404).json({ message: "Profiles not found" });
+            }
+
+            // Create a welcome message
+            const welcomeMessage = new Message({
+                sender: receiverId, // The receiver sends the welcome message
+                receiver: senderId, // The sender receives the welcome message
+                message: `Hi ${senderProfile.name}, welcome to connecting with ${receiverProfile.name}!`
+            });
+
+            await welcomeMessage.save();
+
+            // Add the welcome message to the messages array
+            messages.push(welcomeMessage);
+        }
 
         res.json(messages);
     } catch (err) {
