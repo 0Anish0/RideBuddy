@@ -53,34 +53,45 @@ const getChatProfiles = async (req, res) => {
         let chatProfiles = new Map();  // Use Map to store profiles with additional details
 
         messages.forEach(msg => {
+            // Check for the sender, skip if it's the current user
             if (msg.sender._id.toString() !== profileId) {
-                // Add sender details if not current user
                 if (!chatProfiles.has(msg.sender._id.toString())) {
                     chatProfiles.set(msg.sender._id.toString(), {
                         _id: msg.sender._id,
                         name: msg.sender.name,
                         profilePicture: msg.sender.profilePicture,
-                        unreadMessages: 0
+                        unreadMessages: 0,
+                        lastMessageTime: msg.timestamp  // Initialize with the message's timestamp
                     });
                 }
+                // Increment unread messages count if the message is not read and the receiver is the current user
                 if (!msg.isRead && msg.receiver._id.toString() === profileId) {
-                    // Increment unread messages count if the message is not read and the receiver is the current user
                     chatProfiles.get(msg.sender._id.toString()).unreadMessages += 1;
                 }
+                // Update lastMessageTime if this message is more recent
+                if (msg.timestamp > chatProfiles.get(msg.sender._id.toString()).lastMessageTime) {
+                    chatProfiles.get(msg.sender._id.toString()).lastMessageTime = msg.timestamp;
+                }
             }
+
+            // Check for the receiver, skip if it's the current user
             if (msg.receiver._id.toString() !== profileId) {
-                // Add receiver details if not current user
                 if (!chatProfiles.has(msg.receiver._id.toString())) {
                     chatProfiles.set(msg.receiver._id.toString(), {
                         _id: msg.receiver._id,
                         name: msg.receiver.name,
                         profilePicture: msg.receiver.profilePicture,
-                        unreadMessages: 0
+                        unreadMessages: 0,
+                        lastMessageTime: msg.timestamp  // Initialize with the message's timestamp
                     });
                 }
+                // Increment unread messages count if the message is not read and the sender is the current user
                 if (!msg.isRead && msg.sender._id.toString() === profileId) {
-                    // Increment unread messages count if the message is not read and the sender is the current user
                     chatProfiles.get(msg.receiver._id.toString()).unreadMessages += 1;
+                }
+                // Update lastMessageTime if this message is more recent
+                if (msg.timestamp > chatProfiles.get(msg.receiver._id.toString()).lastMessageTime) {
+                    chatProfiles.get(msg.receiver._id.toString()).lastMessageTime = msg.timestamp;
                 }
             }
         });
@@ -102,7 +113,6 @@ const getChatProfiles = async (req, res) => {
         });
     }
 };
-
 
 
 module.exports = {getMessagesBetweenProfiles, getChatProfiles};
