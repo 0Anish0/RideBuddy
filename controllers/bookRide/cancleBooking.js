@@ -1,7 +1,7 @@
 const Profile = require('../../models/Profile'); // Will now be used
 const Wallet = require('../../models/Wallet');
 const RideOffer = require('../../models/RideOffer');
-const ConfirmedRide = require('../../models/ConfirmRide');
+const ConfirmedRide = require('../../models/ConfirmedRide');
 const RequestBooking = require('../../models/RequestBooking');
 
 // Cancelling a Confirmed Ride
