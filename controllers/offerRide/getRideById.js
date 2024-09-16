@@ -28,13 +28,14 @@ const getRidesByUserId = async (req, res) => {
             .populate({
                 path: 'offerRide',
                 model: 'RideOffer',
-                select: 'pickupTime tripDuration sourceName destinationName seatsOffered tripDistance vehicle.brand_model pricePerSeat',
+                select: 'pickupTime time tripDuration sourceName destinationName seatsOffered tripDistance vehicle.brand_model pricePerSeat',
                 populate: { path: 'driver', select: 'name', model: 'Profile' }  // Populate the driver field
             })
             .populate('userProfile', 'name');
 
+
         // Fetch offered rides (where the user is the driver)
-        const offeredRides = await RideOffer.find({ driver: userId }, 'pickupTime tripDuration sourceName destinationName seatsOffered tripDistance vehicle.brand_model pricePerSeat')
+        const offeredRides = await RideOffer.find({ driver: userId }, 'pickupTime time tripDuration sourceName destinationName seatsOffered tripDistance vehicle.brand_model pricePerSeat')
             .populate({
                 path: 'driver', 
                 select: 'name',

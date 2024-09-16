@@ -19,7 +19,7 @@ const confirmedRideSchema = new mongoose.Schema({
         },
         bookRideId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'BookRide', // Refers to each passenger's booking
+            ref: 'RequestBooking', // Refers to each passenger's booking
             required: true
         }
     }],

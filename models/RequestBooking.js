@@ -37,7 +37,7 @@ const RequestBookingSchema = new Schema({
     },
     offerRide: {
         type: Schema.Types.ObjectId,
-        ref: 'Ride',
+        ref: 'RideOffer',
         required: true,
     },
     paymentAmount: {
