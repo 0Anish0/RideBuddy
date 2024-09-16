@@ -62,7 +62,7 @@ const getMessagesBetweenProfiles = async (req, res) => {
 const getChatProfiles = async (req, res) => {
     try {
         const { profileId } = req.params;  // Assume profileId is passed as a parameter
-        
+
         // Find all messages where the given profileId is either the sender or receiver
         const messages = await Message.find({
             $or: [
@@ -73,32 +73,11 @@ const getChatProfiles = async (req, res) => {
         .populate('sender', 'name profilePicture')   // Populating sender's name and profilePicture
         .populate('receiver', 'name profilePicture'); // Populating receiver's name and profilePicture
 
-        // Extract unique chat profiles (both senders and receivers)
+        // Extract unique chat profiles (focus on receiver's profile)
         let chatProfiles = new Map();  // Use Map to store profiles with additional details
 
         messages.forEach(msg => {
-            // Check for the sender, skip if it's the current user
-            if (msg.sender._id.toString() !== profileId) {
-                if (!chatProfiles.has(msg.sender._id.toString())) {
-                    chatProfiles.set(msg.sender._id.toString(), {
-                        _id: msg.sender._id,
-                        name: msg.sender.name,
-                        profilePicture: msg.sender.profilePicture,
-                        unreadMessages: 0,
-                        lastMessageTime: msg.timestamp  // Initialize with the message's timestamp
-                    });
-                }
-                // Increment unread messages count if the message is not read and the receiver is the current user
-                if (!msg.isRead && msg.receiver._id.toString() === profileId) {
-                    chatProfiles.get(msg.sender._id.toString()).unreadMessages += 1;
-                }
-                // Update lastMessageTime if this message is more recent
-                if (msg.timestamp > chatProfiles.get(msg.sender._id.toString()).lastMessageTime) {
-                    chatProfiles.get(msg.sender._id.toString()).lastMessageTime = msg.timestamp;
-                }
-            }
-
-            // Check for the receiver, skip if it's the current user
+            // Focus on the receiver's profile if they are not the current user
             if (msg.receiver._id.toString() !== profileId) {
                 if (!chatProfiles.has(msg.receiver._id.toString())) {
                     chatProfiles.set(msg.receiver._id.toString(), {
@@ -109,15 +88,19 @@ const getChatProfiles = async (req, res) => {
                         lastMessageTime: msg.timestamp  // Initialize with the message's timestamp
                     });
                 }
-                // Increment unread messages count if the message is not read and the sender is the current user
+
+                // Increment unread messages count if the message is not read and the receiver is the current user
                 if (!msg.isRead && msg.sender._id.toString() === profileId) {
                     chatProfiles.get(msg.receiver._id.toString()).unreadMessages += 1;
                 }
+
                 // Update lastMessageTime if this message is more recent
                 if (msg.timestamp > chatProfiles.get(msg.receiver._id.toString()).lastMessageTime) {
                     chatProfiles.get(msg.receiver._id.toString()).lastMessageTime = msg.timestamp;
                 }
             }
+
+            // Optionally, you can also handle the sender's profile here, but skip this part if focusing only on receivers
         });
 
         // Convert Map to array
@@ -126,7 +109,7 @@ const getChatProfiles = async (req, res) => {
         res.status(200).json({
             success: true,
             chatProfiles: chatProfilesArray,
-            message: 'Chat profiles fetched successfully'
+            message: 'Chat profiles (receiver-focused) fetched successfully'
         });
     } catch (error) {
         console.error(error);
@@ -137,6 +120,7 @@ const getChatProfiles = async (req, res) => {
         });
     }
 };
+
 
 
 module.exports = {getMessagesBetweenProfiles, getChatProfiles};
