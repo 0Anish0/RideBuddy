@@ -51,14 +51,12 @@
 
 
 
-
-
 const mongoose = require('mongoose');
 
 const confirmedRideSchema = new mongoose.Schema({
     offeredRideId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'RideOffer', // Refers to the offered ride
+        ref: 'RideOffer',
         required: true
     },
     passengers: [{
@@ -69,7 +67,7 @@ const confirmedRideSchema = new mongoose.Schema({
         },
         bookRideId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'RequestBooking', // Refers to each passenger's booking
+            ref: 'RequestBooking',
             required: true
         }
     }],
@@ -91,25 +89,23 @@ const confirmedRideSchema = new mongoose.Schema({
     toObject: { virtuals: true }
 });
 
-// Adding an instance method
-confirmedRideSchema.methods.calculateStatus = async function() {
-    const now = new Date();
-    // Populate the offeredRideId if it's not already populated
-    await this.populate('offeredRideId').execPopulate();
-
+// Virtual field for dynamic status
+confirmedRideSchema.virtual('rideStatus').get(function () {
     if (!this.offeredRideId || !this.offeredRideId.pickupTime) {
-        return 'No pickup time available';
+        return 'Status unavailable'; // Handle unpopulated offeredRideId or missing pickup time
     }
+
+    const now = new Date();
     const pickupTime = new Date(this.offeredRideId.pickupTime);
 
     if (pickupTime < now) {
-        return 'Recent';
+        return 'recent';
     } else if (pickupTime.toDateString() === now.toDateString()) {
-        return now < pickupTime ? 'Upcoming' : 'Current';
+        return now < pickupTime ? 'upcoming' : 'current';
     } else {
-        return 'Upcoming';
+        return 'upcoming';
     }
-};
+});
 
 const ConfirmedRide = mongoose.model('ConfirmedRide', confirmedRideSchema);
 module.exports = ConfirmedRide;
