@@ -53,7 +53,7 @@ const getRidesByUserId = async (req, res) => {
             path: 'offeredRideId',
             model: 'RideOffer',
             select: 'pickupTime tripDuration sourceName destinationName seatsOffered tripDistance vehicle.brand_model pricePerSeat',
-            populate: { path: 'driver', select: 'name', model: 'Profile' }  // Populate the driver field from Profile
+            populate: { path: 'driver', select: 'name', model: 'Profile' }
         })
         .populate({
             path: 'passengers.profileId',
