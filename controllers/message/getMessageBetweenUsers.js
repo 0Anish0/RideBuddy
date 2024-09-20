@@ -1,33 +1,34 @@
 const Message = require('../../models/Message');
 const Profile = require('../../models/Profile');
+const AadharVerification = require('../../models/AdharVerification');
+
 const getMessagesBetweenProfiles = async (req, res) => {
     try {
         const { senderId, receiverId } = req.params;
 
-        // Check if any messages already exist between sender and receiver
         let messages = await Message.find({
             $or: [
                 { sender: senderId, receiver: receiverId },
                 { sender: receiverId, receiver: senderId }
             ]
         })
-        .sort('timestamp')
-        .populate({
-            path: 'sender',
-            select: 'name profilePicture',
-            populate: {
-                path: 'userId',
-                select: 'mobile'
-            }
-        })
-        .populate({
-            path: 'receiver',
-            select: 'name profilePicture',
-            populate: {
-                path: 'userId',
-                select: 'mobile'
-            }
-        });
+            .sort('timestamp')
+            .populate({
+                path: 'receiver',
+                select: 'name profilePicture aadharVerification',
+                populate: {
+                    path: 'aadharVerification',
+                    select: 'response.image'
+                }
+            })
+            .populate({
+                path: 'receiver',
+                select: 'name profilePicture',
+                populate: {
+                    path: 'userId',
+                    select: 'mobile'
+                }
+            });
 
         // If no messages exist, create a welcome message
         if (messages.length === 0) {
@@ -43,25 +44,25 @@ const getMessagesBetweenProfiles = async (req, res) => {
             const welcomeMessage = new Message({
                 sender: receiverId, // The receiver sends the welcome message
                 receiver: senderId, // The sender receives the welcome message
-                message: `Hi ${senderProfile.name}, welcome to connecting with ${receiverProfile.name}!`
+                message: `Hi ${ senderProfile.name }, welcome to connecting with ${ receiverProfile.name } !`
             });
 
-            await welcomeMessage.save();
+        await welcomeMessage.save();
 
-            // Add the welcome message to the messages array
-            messages.push(welcomeMessage);
-        }
+        // Add the welcome message to the messages array
+        messages.push(welcomeMessage);
+    }
 
         res.json(messages);
-    } catch (err) {
-        res.status(500).send(err);
-    }
+} catch (err) {
+    res.status(500).send(err);
+}
 };
 
 // Controller to get chat profiles based on a given profile ID
 const getChatProfiles = async (req, res) => {
     try {
-        const { profileId } = req.params;  // Assume profileId is passed as a parameter
+        const { profileId } = req.params;
 
         // Find all messages where the given profileId is either the sender or receiver
         const messages = await Message.find({
@@ -70,11 +71,18 @@ const getChatProfiles = async (req, res) => {
                 { receiver: profileId }
             ]
         })
-        .populate('sender', 'name profilePicture')   // Populating sender's name and profilePicture
-        .populate('receiver', 'name profilePicture'); // Populating receiver's name and profilePicture
+            .populate('sender', 'name profilePicture')
+            .populate({
+                path: 'receiver',
+                select: 'name profilePicture aadharVerification',
+                populate: {
+                    path: 'aadharVerification',
+                    select: 'response.image' // Get the Aadhar image from the response
+                }
+            });
 
-        // Extract unique chat profiles (focus on receiver's profile)
-        let chatProfiles = new Map();  // Use Map to store profiles with additional details
+        // Extract unique chat profiles
+        let chatProfiles = new Map();
 
         messages.forEach(msg => {
             // Focus on the receiver's profile if they are not the current user
@@ -84,12 +92,16 @@ const getChatProfiles = async (req, res) => {
                         _id: msg.receiver._id,
                         name: msg.receiver.name,
                         profilePicture: msg.receiver.profilePicture,
+                        aadharVerification: msg.receiver.aadharVerification ? {
+                            image: msg.receiver.aadharVerification.response.image || null, // Get Aadhar image
+                            verificationStatus: msg.receiver.aadharVerification.status || null // Include verification status
+                        } : null,
                         unreadMessages: 0,
-                        lastMessageTime: msg.timestamp  // Initialize with the message's timestamp
+                        lastMessageTime: msg.timestamp
                     });
                 }
 
-                // Increment unread messages count if the message is not read and the receiver is the current user
+                // Increment unread messages count if the message is not read and the sender is the current user
                 if (!msg.isRead && msg.sender._id.toString() === profileId) {
                     chatProfiles.get(msg.receiver._id.toString()).unreadMessages += 1;
                 }
@@ -99,8 +111,6 @@ const getChatProfiles = async (req, res) => {
                     chatProfiles.get(msg.receiver._id.toString()).lastMessageTime = msg.timestamp;
                 }
             }
-
-            // Optionally, you can also handle the sender's profile here, but skip this part if focusing only on receivers
         });
 
         // Convert Map to array
@@ -108,7 +118,16 @@ const getChatProfiles = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            chatProfiles: chatProfilesArray,
+            chatProfiles: chatProfilesArray.map(profile => ({
+                _id: profile._id,
+                name: profile.name,
+                profilePicture: profile.profilePicture,
+                aadharVerification: profile.aadharVerification ? {
+                    image: profile.aadharVerification.image || null,
+                } : null,
+                unreadMessages: profile.unreadMessages,
+                lastMessageTime: profile.lastMessageTime
+            })),
             message: 'Chat profiles (receiver-focused) fetched successfully'
         });
     } catch (error) {
@@ -121,6 +140,4 @@ const getChatProfiles = async (req, res) => {
     }
 };
 
-
-
-module.exports = {getMessagesBetweenProfiles, getChatProfiles};
+module.exports = { getMessagesBetweenProfiles, getChatProfiles };

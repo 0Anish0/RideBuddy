@@ -61,6 +61,10 @@ const ProfileSchema = new mongoose.Schema({
     prompts: {
         type: [String]
     },
+    aadharVerification: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'AadharVerification'
+    },
     status: {
         type: String,
         required: true,
