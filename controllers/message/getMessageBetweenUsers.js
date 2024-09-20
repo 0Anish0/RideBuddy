@@ -13,20 +13,28 @@ const getMessagesBetweenProfiles = async (req, res) => {
             ]
         })
             .sort('timestamp')
+            // .populate({
+            //     path: 'receiver',
+            //     select: 'name profilePicture aadharVerification',
+            //     populate: {
+            //         path: 'aadharVerification',
+            //         select: 'response.image'
+            //     }
+            // })
             .populate({
-                path: 'receiver',
-                select: 'name profilePicture aadharVerification',
-                populate: {
-                    path: 'aadharVerification',
-                    select: 'response.image'
-                }
-            })
-            .populate({
-                path: 'receiver',
+                path: 'sender',
                 select: 'name profilePicture',
                 populate: {
                     path: 'userId',
                     select: 'mobile'
+                }
+            })
+            .populate({
+                path: 'receiver',
+                select: 'name profilePicture aadharVerification',
+                populate: {
+                    path: 'userId aadharVerification',
+                    select: 'mobile response.image'
                 }
             });
 
